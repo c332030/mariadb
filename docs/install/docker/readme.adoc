@@ -1,0 +1,62 @@
+
+= mariadb docker
+
+初始化变量，需要指定密码
+
+[source,shell script]
+----
+
+password=123456
+
+image=mariadb
+#tag=10.4
+tag=latest
+
+docker pull $image:$tag
+
+name=mariadb
+#name=mariadb1
+#name=mariadb2
+
+docker stop $name
+docker rm $name
+
+port=3306
+# port=3307
+
+program_home=/home/program
+
+mkdir -p $program_home/$name/log/log_bin
+
+chmod -R 777 $program_home/$name/log
+
+docker run -d \
+  --privileged=true \
+  --restart unless-stopped \
+  \
+  --log-opt max-size=10m \
+  --log-opt max-file=3 \
+  \
+  -v /etc/localtime:/etc/localtime \
+  \
+  -v $program_home/$name:/usr/local/mysql \
+  -v $program_home/$name/my.conf:/etc/mysql/my.conf \
+  -v $program_home/$name/log:/var/log/mysql \
+  -v $program_home/$name/data:/var/lib/mysql \
+  \
+  -p $port:3306 \
+  -e mysql_root_password=$password \
+  \
+  --name $name \
+  \
+  $image:$tag
+
+----
+
+[source,shell script]
+----
+docker logs $NAME
+
+docker exec -it $NAME bash
+
+----
