@@ -1,0 +1,15 @@
+
+= ss
+
+[source,shell]
+----
+docker run \
+  --name percona-xtrabackup \
+  --volumes-from percona-server-mysql \
+  percona/percona-xtrabackup \
+  xtrabackup --backup \
+    --data-dir=/var/lib/mysql \
+    --target-dir=/backup \
+    --user=root \
+    --password=mysql
+----
